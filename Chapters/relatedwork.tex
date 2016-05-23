@@ -19,8 +19,10 @@ The routing table consists of a list of peers with unique id's mapping to the ad
 If a peer receives a lookup request it will use the routing table to find a concrete peer also known as node by routing through the nodes with closest id's.
 
 The routing table used in Pastry is based on prefix matching and consists of three layers; Leaf set, Routing table, and Neighborhood set.\\
-\includegraphics[width=.45\linewidth]{gfx/example_1}
-
+\begin{figure}[bth]
+\includegraphics[width=1\linewidth]{gfx/pastry-routing}
+\caption[routingtable]{Routing table for Pastry} \label{fig:pastryrouting}
+\end{figure}
 When a message is send to a specific node this node's id is looked up in the routing table, where it first will check if the key fits in the range of it's leaf set and if it does, a message can be forwarded to the destination node.
 If the key does not fit in it's leaf set the routing table inside the pastry routing table is used to forward the message to a node that shares a common prefix with the key by at least one digit.
 In rare cases where the appropriate entry is empty or unreachable, the message will be forwarded using neighborhood set to a known node.
@@ -38,7 +40,7 @@ In rare cases where the appropriate entry is empty or unreachable, the message w
 \subsubsection{Tom P2P}
 
 \section{Group Communication}
-Group communication is an important aspect of communication.
+Group communication is an important aspect of communication and can be used to a number of things.
 
 \subsection{Scribe}
 \subsection{Grup Messaging for Kademlia}
