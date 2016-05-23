@@ -9,11 +9,29 @@ The different sections presented in this chapter will be divided into following 
 \end{enumerate}
 
 \section{Peer-to-Peer Networks}
-Peer-to-peer (P2P) networking has been evolving for some decades and is now a solid alternative for the existing centralized approach of communicating.
+\label{sec:p2p-networks}
+Peer-to-Peer (P2P) networking has been evolving for some decades and is now a solid alternative for the existing centralized approach of communicating.
 P2P is characterized by sharing resources directly between peers without any intermediate interaction and does not have any single point of failure. The activities are coordinated between the peers in the network.
-There are many existing solutions for P2P networks. Int the coming subsections a few of these networks which are relevant for this project  are presented. 
+There are many existing solutions for P2P networks. In the coming subsections a few of these networks, which are relevant for this project, are presented. 
 \subsection{Pastry}
-Pastry is a structured P2P network which consists of a routing table. 
+Pastry is a structured P2P network designed as a Distributed Hash Table (DHT). DHT is designed to be a infrastructure, which performs lookup services for the rest of the P2P system using keys providing you with values that matches these keys.
+The keys and the values are stored in the peers and these can then be used to build knowledge about the peers in the network. Each peer in the network has a routing table which provides some knowledge about the other peers in the network. These routing tables are also maintained by each peer.
+The routing table consists of a list of peers with unique id's mapping to the addresses of some peers in the network.
+If a peer receives a lookup request it will use the routing table to find a concrete peer also known as node by routing through the nodes with closest id's.
+
+The routing table used in Pastry is based on prefix matching and consists of three layers; Leaf set, Routing table, and Neighborhood set.\\
+\begin{figure}[bth]
+\includegraphics[width=1\linewidth]{gfx/pastry-routing}
+\caption[routingtable]{Routing table for Pastry} \label{fig:pastryrouting}
+\end{figure}
+When a message is send to a specific node this node's id is looked up in the routing table, where it first will check if the key fits in the range of it's leaf set and if it does, a message can be forwarded to the destination node.
+If the key does not fit in it's \emph{leaf set} the routing table inside the pastry routing table is used to forward the message to a node that shares a common prefix with the key by at least one digit.
+In rare cases where the appropriate entry is empty or unreachable, the message will be forwarded using neighborhood set to a known node.
+
+%Responsible for the keys closest to the peer..
+%Structure knowledge that the individual peer has about the rest of the network
+%route 
+%use peer you know
 
 \subsection{Kademlia}
 Kademlia is another structured P2P network functioning as a distributed hash table and which focuses on scalability, loadbalancing and fault-tolerance. Kademila is used in many application with millions of user including BitTorent.
@@ -38,8 +56,39 @@ TomP2P is a JAVA implementaion of Kademila protocol with many extra features. To
 %Each TomP2P node has a table that can be configured either to be disk-based or memory-based to store its values. 
 
 \section{Group Communication}
-\subsection{Scribe}
+Group communication is an important aspect of communication and can be used to a number of useful things as group chat, live media stream etc.
+Regular DHT's or structured networks does not support group communication per default, but there has been build different extensions which does.
+\subsection{SCRIBE}
+SCRIBE is a very well-known extension build on top of Pastry which supports group communication. 
+To create a group in SCRIBE a groupID is generated and a ``create'' message is then routed in the Pastry network to the node whose ID is closest to the groupID. This receiving node becomes the root without knowing it as it only keeps the groupID saved as normal data.
+It is now possible to join this newly created group by sending a ``join'' message towards the groupID, then a node in the Pastry network will receive the message and add the sending node as a child and if this node is not a forwarder it will send a ``join'' message towards the groupID and thus become a forwarder for the group. This means there now is a new group member in the group and also a new forwarder. Every node in a group is forwarder, but a forwarder is not necessary a member of  the group.
+
+To leave a group a node will first check if it has any children and if it hasn't is sends a ``leave'' message to its parent which continuous recursively up the tree otherwise it stays as forwarder but not a member.
+
+The tree which is build by SCRIBE is not a part of Pastry, but it is build on top of Pastry. It can be implemented with two different approaches; either as a top-down approache or as crawl.
+
+
+The choice of implementation for use depends on use case
+
+%Different ways of message passing (Sendign messages):
+%1-Top-down --> sequence is easy to handle but huge load on root --> outside of pastry 
+%2-Crawl (reminds of Gnutella) --> equal load on all nodes and root but hard to maintain sequence
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
 \subsection{Grup Messaging for Kademlia}
+Another extension is made a eaearch aetiklce ,,,
 
 \section{Confidential Communication}
 \subsection{Encrypted Communication}
@@ -55,51 +104,3 @@ TomP2P is a JAVA implementaion of Kademila protocol with many extra features. To
 
 
 
-
-
-Whereas the purpose of the Introduction chapter was to entice and
-convince the reader that work reported is interesting, that the author
-is asking the right questions about it, and reading about it will be
-worthwhile, the purpose of the Related Work chapter is to
-demonstrate that the author possesses a fine overview and keen
-understanding of the topic of the work.  Note that while the title of
-the chapter is ``Related Work'', it might as well be called
-``\emph{Relevant} Work'' in that you should only include work that are
-useful or relevant to your purpose. 
-
-Writing about others' work can be challenging---it is easy to succumb
-to just writing condensed summaries, which is just as tedious to read
-as they are to write. A better method is to gain an overview over the
-field of inquiry, and then establish in the first section what aspects
-or dimensions are crucial to systems or methodologies such as the ones
-described. This demonstrates to the reader that the author has
-understanding and judgement. Having done this, every paper or work can
-then be described in those established terms. This makes for easier
-and much more structured writing, and it also helps the reader
-differentiate the systems and works reported on. If there are multiple
-works that cover approximately the same area (\eg, using the same
-technique), you may mention several, but only go into detail with the
-most significant or representative one.
-
-The chapter can then be concluded with a table summarising all the
-work reported on using the aspects defined in the introduction of the
-chapter.
-
-A crucial element of this chapter is that it concerns the work of
-others and \emph{only} that. While the selection of aspects or
-dimensions described above invariantly will reflect your own focus,
-that should be the extend of which your own work and plans influence
-this chapter.  Your own judgement comes in the next chapter.
-
-\section{Frameworks and Technologies}
-\label{sec:fram-techn}
-
-Related work need not be only published academic work. In many cases,
-it is also relevant to describe crucial frameworks and technologies
-that will be used or are relevant for the thesis.  This does not mean
-that all employed technologies should be described in detail, but
-frameworks and technologies that are unusual (for lack of a better
-word) could be described here. \Eg, there is no need to describe an
-ordinary network stack, but if the work involves GPU programming, a
-description of the chosen architecture might well be relevant, as it
-informs all the following chapters.
