@@ -16,7 +16,26 @@ There are many existing solutions for P2P networks. Int the coming subsections a
 Pastry is a structured P2P network which consists of a routing table. 
 
 \subsection{Kademlia}
-\subsubsection{Tom P2P}
+Kademlia is another structured P2P network functioning as a distributed hash table and which focuses on scalability, loadbalancing and fault-tolerance. Kademila is used in many application with millions of user including BitTorent.
+
+Every Kademlia node owns a 160-bit long unique identifier. The keys is stored at the node with equal id or with shortest distance.
+The distance between nodes is determined using bitwise exclusive or (XOR). The XOR is unidirectional and it therefor ensure a unique distance for every node. Unidirectionality means that all lookups for a specific key end at the same path, regardless of the originating node, enabling caching frequently requested key-values and thus lessens the load on nodes with a popular contents.
+
+Nodes in Kademlia is treats as leaves in a binary tree. The position of nodes is determined by the shortest unique prefix of its ID as illustrated by figure x. Every node see the rest of the binary tree as divided subtres. The closest subtree consists of nodes with an id that share the longest common prefix with the node. Every node is ensured to know at least one node in each of the subtres. That info is stored in the k-bucket, which is used for the look-up process. When a node receives a lookup request it will find the node inside its buckets which shares the longest common prefix with the lookup-key. The founded node is then used to another lookup request. This process is repeated until the required node is founded.
+
+Kademila stands out from the other DHT P2P systems by mainting the routing tables with a minimal effort. Every time a node receives a request it will update its k-bucket with info about the requesting node. Thus the k-bucket will stay up-to-date without any manual effort.
+
+%Unlike Pastry, Kademlia uses lookups for discovering a message receiver, and thus a sender first finds the correct message receiver using lookup messages and then directly sends the message to the node. 
+
+%While Kademlia may flood the network with lookups, it does not flood the network with control messages; however, this together may generate more data traffic.
+
+\subsubsection{TomP2P}
+TomP2P is a JAVA implementaion of Kademila protocol with many extra features. TomP2P allows for instance automatic set up of NAT traversal, which checks if peers is reachable by its external address. In the case of non reachable node, TomP2P will first try to use UPNP and NATPMP to set up port forwarding on the router and second it will allows setting up distributed relaying. TomP2P enables custom behavior for built-in methods like GET and PUT. Thus developers is able to write some custom code which will be executed when the methods is executed.
+
+%- Replication
+%- Security
+
+%Each TomP2P node has a table that can be configured either to be disk-based or memory-based to store its values. 
 
 \section{Group Communication}
 \subsection{Scribe}
