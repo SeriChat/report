@@ -19,14 +19,14 @@ The keys and the values are stored in the peers and these can then be used to bu
 The routing table consists of a list of peers with unique id's mapping to the addresses of some peers in the network.
 If a peer receives a lookup request it will use the routing table to find a concrete peer also known as node by routing through the nodes with closest id's.
 
-The routing table used in Pastry is based on prefix matching and consists of three layers; Leaf set, Routing table, and Neighborhood set.\\
+The routing table used in Pastry is based on prefix matching and consists of three layers; Leaf set, Routing table, and Neighborhood set.
 \begin{figure}[bth]
 \includegraphics[width=1\linewidth]{gfx/pastry-routing}
 \caption[routingtable]{Routing table for Pastry} \label{fig:pastryrouting}
 \end{figure}
-When a message is send to a specific node this node's id is looked up in the routing table, where it first will check if the key fits in the range of it's leaf set and if it does, a message can be forwarded to the destination node.
+When a message is send to a specific node this node's id is looked up in the routing table, where it first will check if the key fits in the range of it's \emph{leaf set} and if it does, a message can be forwarded to the destination node.
 If the key does not fit in it's \emph{leaf set} the routing table inside the pastry routing table is used to forward the message to a node that shares a common prefix with the key by at least one digit.
-In rare cases where the appropriate entry is empty or unreachable, the message will be forwarded using neighborhood set to a known node.
+In rare cases where the appropriate entry is empty or unreachable, the message will be forwarded using \emph{neighborhood set} to a known node.
 
 %Responsible for the keys closest to the peer..
 %Structure knowledge that the individual peer has about the rest of the network
@@ -34,12 +34,12 @@ In rare cases where the appropriate entry is empty or unreachable, the message w
 %use peer you know
 
 \subsection{Kademlia}
-Kademlia is another structured P2P network functioning as a distributed hash table and which focuses on scalability, loadbalancing and fault-tolerance. Kademila is used in many application with millions of user including BitTorent.
+Kademlia is another structured P2P network functioning as a distributed hash table. Kademlia focuses on scalability, loadbalancing, and fault-tolerance. Kademila is used in many application with millions of users including BitTorent.
 
 Every Kademlia node owns a 160-bit long unique identifier. The keys is stored at the node with equal id or with shortest distance.
-The distance between nodes is determined using bitwise exclusive or (XOR). The XOR is unidirectional and it therefor ensure a unique distance for every node. Unidirectionality means that all lookups for a specific key end at the same path, regardless of the originating node, enabling caching frequently requested key-values and thus lessens the load on nodes with a popular contents.
+The distance between nodes is determined using bitwise exclusive or (XOR). The XOR is unidirectional and it therefore ensure a unique distance for every node. Unidirectionality means that all lookups for a specific key end at the same path, regardless of the originating node, enabling caching frequently requested key-values and thus lessens the load on nodes with a popular contents.
 
-Nodes in Kademlia is treats as leaves in a binary tree. The position of nodes is determined by the shortest unique prefix of its ID as illustrated by figure x. Every node see the rest of the binary tree as divided subtres. The closest subtree consists of nodes with an id that share the longest common prefix with the node. Every node is ensured to know at least one node in each of the subtres. That info is stored in the k-bucket, which is used for the look-up process. When a node receives a lookup request it will find the node inside its buckets which shares the longest common prefix with the lookup-key. The founded node is then used to another lookup request. This process is repeated until the required node is founded.
+Nodes in Kademlia is treated as leaves in a binary tree. The position of nodes is determined by the shortest unique prefix of its ID as illustrated by figure x. Every node see the rest of the binary tree as divided subtrees. The closest subtree consists of nodes with an id that share the longest common prefix with the node. Every node is ensured to know at least one node in each of the subtres. That info is stored in the k-bucket, which is used for the lookup process. When a node receives a lookup request it will find the node inside its buckets which shares the longest common prefix with the lookup-key. The founded node is then used to another lookup request. This process is repeated until the required node is founded.
 
 Kademila stands out from the other DHT P2P systems by mainting the routing tables with a minimal effort. Every time a node receives a request it will update its k-bucket with info about the requesting node. Thus the k-bucket will stay up-to-date without any manual effort.
 
@@ -67,12 +67,12 @@ To leave a group a node will first check if it has any children and if it hasn't
 
 The tree which is build by SCRIBE is not a part of Pastry, but it is build on top of Pastry. It can be implemented with two different approaches; either as a top-down approache or as crawl.
 
-
-The choice of implementation for use depends on use case
-
 %Different ways of message passing (Sendign messages):
 %1-Top-down --> sequence is easy to handle but huge load on root --> outside of pastry 
 %2-Crawl (reminds of Gnutella) --> equal load on all nodes and root but hard to maintain sequence
+
+The choice of implementation for use depends on use case
+
 
 
 
