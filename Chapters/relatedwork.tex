@@ -19,7 +19,7 @@ DHT provides look-up services similar to regular hash tables.
 DHT provides a good load balance by distributing key-values evenly between peers which is an important factor for P2P systems.
 
 \subsection{Pastry}
-Pastry is a structured P2P network, that implements DHT, designed to be an infrastructure for other application. 
+Pastry is a structured P2P network, that implements DHT, designed to be an scalable and fault-tolerant infrastructure for other applications. 
 %The keys and the values are stored in the peers and these can then be used to build knowledge about the peers in the network.
 Each peer in the network has a routing table which provides some knowledge about the other peers in the network. These routing tables are also maintained by each peer.
 The routing table consists of a list of peers with unique id's mapping to the addresses of some peers in the network.
@@ -31,11 +31,14 @@ The routing table used in Pastry is based on prefix matching and consists of thr
 \caption[routingtable]{Routing table for Pastry} \label{fig:pastryrouting}
 \end{figure}
 
-When a message is send to a specific node this node's id is looked up in the routing table, where it first will check if the key fits in the range of it's \emph{leaf set}. If the key is not covered by the \emph{leaf set} the routing table inside the pastry routing table is used to forward the message to a node that shares a common prefix with the key by at least one digit.
-In rare cases where the appropriate entry in the routing table is empty or the node is unreachable, the message will be forwarded using \emph{neighborhood set} to a known node.
+When a message is send to a specific node this node's id is looked up in the routing table, where it first will check if the key fits in the range of it's \emph{leaf set}. If the key is not covered by the \emph{leaf set} the routing table inside the Pastry routing table is used to forward the message to a node that shares a common prefix. 
 
+Pastry routes with O(log\textsubscript{2\textsuperscript b} N) routing hops. A trade-off between the maximum number of hop and the size of the routing table is configured by a configuration parameter ``b''.
+An advantage in Pastry is that it prefers nodes that are close in the ip-space and thereby gives a high performance in the real world.
 
-a message can be forwarded to the destination node.
+%with the key by at least one digit.
+%In rare cases where the appropriate entry in the routing table is empty or the matched node is unreachable, the message will again be forwarded using the routing table to a node which shares a common prefix and is numerically closer  to the key than the previous node's id.
+%a message can be forwarded to the nearest destination node.
 
 %Responsible for the keys closest to the peer..
 %Structure knowledge that the individual peer has about the rest of the network
@@ -43,14 +46,14 @@ a message can be forwarded to the destination node.
 %use peer you know
 
 \subsection{Kademlia}
-Kademlia is another structured P2P network functioning as a distributed hash table. Kademlia focuses on scalability, loadbalancing, and fault-tolerance. Kademlia is used in many application with millions of users including BitTorent.
+Kademlia is another structured P2P network functioning as a DHT. Kademlia focuses on scalability, load-balancing, and fault-tolerance. Kademlia is used in many applications with millions of users including BitTorent.
 
-Every Kademlia node owns a 160-bit long unique identifier. The keys is stored at the node with equal id or with shortest distance.
-The distance between nodes is determined using bitwise exclusive or (XOR). The XOR is unidirectional and it therefore ensure a unique distance for every node. Unidirectionality means that all lookups for a specific key end at the same path, regardless of the originating node, enabling caching frequently requested key-values and thus lessens the load on nodes with a popular contents.
+Every Kademlia node owns a 160-bit long unique identifier. The keys are stored at the node with equal id or with the shortest distance.
+The distance between nodes is determined using bitwise exclusive or (XOR). The XOR is unidirectional and it therefore ensure a unique distance for every node. Unidirectionality means that all lookups for a specific key end at the same path, regardless of the originating node, enabling caching frequently requested key-values and thus lessens the load on nodes with popular contents.
 
-Nodes in Kademlia is treated as leaves in a binary tree. The position of nodes is determined by the shortest unique prefix of its ID as illustrated by figure x. Every node see the rest of the binary tree as divided subtrees. The closest subtree consists of nodes with an id that share the longest common prefix with the node. Every node is ensured to know at least one node in each of the subtres. That info is stored in the k-bucket, which is used for the lookup process. When a node receives a lookup request it will find the node inside its buckets which shares the longest common prefix with the lookup-key. The founded node is then used to another lookup request. This process is repeated until the required node is founded.
+Nodes in Kademlia is treated as leaves in a binary tree. The position of nodes is determined by the shortest unique prefix of its ID as illustrated by figure \ref{fig:kademliaprefix}. Every node see the rest of the binary tree as divided subtrees. The closest subtree consists of nodes with an id that share the longest common prefix with the node. Every node is ensured to know at least one node in each of the subtrees. That info is stored in the k-bucket, which is used for the lookup process. When a node receives a lookup request it will search for a node inside its buckets which shares the longest common prefix with the lookup-key. The discovered node is then used to another lookup request. This process is repeated until the required node is reached.
 
-Kademila stands out from the other DHT P2P systems by mainting the routing tables with a minimal effort. Every time a node receives a request it will update its k-bucket with info about the requesting node. Thus the k-bucket will stay up-to-date without any manual effort.
+Kademlia stands out from the other DHT P2P systems by maintaining the routing tables with a minimal effort. Everytime a node receives a request it will update its k-buckets with info about the requesting node. Thus the k-bucket will stay up-to-date without any manual effort.
 
 %Unlike Pastry, Kademlia uses lookups for discovering a message receiver, and thus a sender first finds the correct message receiver using lookup messages and then directly sends the message to the node. 
 
