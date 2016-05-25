@@ -13,9 +13,15 @@ The different sections presented in this chapter will be divided into following 
 Peer-to-Peer (P2P) networking has been evolving for some decades and is now a solid alternative for the existing centralized approach of communicating.
 P2P is characterized by sharing resources directly between peers without any intermediate interaction and does not have any single point of failure. The activities are coordinated between the peers in the network.
 There are many existing solutions for P2P networks. In the coming subsections a few of these networks, which are relevant for this project, are presented. 
+
+Many P2P systems are implemented as Distributed Hash Tables (DHT) which are a distributed key-value store.
+DHT provides look-up services similar to regular hash tables.
+DHT provides a good load balance by distributing key-values evenly between peers which is an important factor for P2P systems.
+
 \subsection{Pastry}
-Pastry is a structured P2P network designed as a Distributed Hash Table (DHT). DHT is designed to be a infrastructure, which performs lookup services for the rest of the P2P system using keys providing you with values that matches these keys.
-The keys and the values are stored in the peers and these can then be used to build knowledge about the peers in the network. Each peer in the network has a routing table which provides some knowledge about the other peers in the network. These routing tables are also maintained by each peer.
+Pastry is a structured P2P network, that implements DHT, designed to be an infrastructure for other application. 
+%The keys and the values are stored in the peers and these can then be used to build knowledge about the peers in the network.
+Each peer in the network has a routing table which provides some knowledge about the other peers in the network. These routing tables are also maintained by each peer.
 The routing table consists of a list of peers with unique id's mapping to the addresses of some peers in the network.
 If a peer receives a lookup request it will use the routing table to find a concrete peer also known as node by routing through the nodes with closest id's.
 
@@ -24,9 +30,12 @@ The routing table used in Pastry is based on prefix matching and consists of thr
 \includegraphics[width=1\linewidth]{gfx/pastry-routing}
 \caption[routingtable]{Routing table for Pastry} \label{fig:pastryrouting}
 \end{figure}
-When a message is send to a specific node this node's id is looked up in the routing table, where it first will check if the key fits in the range of it's \emph{leaf set} and if it does, a message can be forwarded to the destination node.
-If the key does not fit in it's \emph{leaf set} the routing table inside the pastry routing table is used to forward the message to a node that shares a common prefix with the key by at least one digit.
-In rare cases where the appropriate entry is empty or unreachable, the message will be forwarded using \emph{neighborhood set} to a known node.
+
+When a message is send to a specific node this node's id is looked up in the routing table, where it first will check if the key fits in the range of it's \emph{leaf set}. If the key is not covered by the \emph{leaf set} the routing table inside the pastry routing table is used to forward the message to a node that shares a common prefix with the key by at least one digit.
+In rare cases where the appropriate entry in the routing table is empty or the node is unreachable, the message will be forwarded using \emph{neighborhood set} to a known node.
+
+
+a message can be forwarded to the destination node.
 
 %Responsible for the keys closest to the peer..
 %Structure knowledge that the individual peer has about the rest of the network
@@ -34,7 +43,7 @@ In rare cases where the appropriate entry is empty or unreachable, the message w
 %use peer you know
 
 \subsection{Kademlia}
-Kademlia is another structured P2P network functioning as a distributed hash table. Kademlia focuses on scalability, loadbalancing, and fault-tolerance. Kademila is used in many application with millions of users including BitTorent.
+Kademlia is another structured P2P network functioning as a distributed hash table. Kademlia focuses on scalability, loadbalancing, and fault-tolerance. Kademlia is used in many application with millions of users including BitTorent.
 
 Every Kademlia node owns a 160-bit long unique identifier. The keys is stored at the node with equal id or with shortest distance.
 The distance between nodes is determined using bitwise exclusive or (XOR). The XOR is unidirectional and it therefore ensure a unique distance for every node. Unidirectionality means that all lookups for a specific key end at the same path, regardless of the originating node, enabling caching frequently requested key-values and thus lessens the load on nodes with a popular contents.
@@ -57,37 +66,25 @@ TomP2P is a JAVA implementaion of Kademila protocol with many extra features. To
 
 \section{Group Communication}
 Group communication is an important aspect of communication and can be used to a number of useful things as group chat, live media stream etc.
-Regular DHT's or structured networks does not support group communication per default, but there has been build different extensions which does.
+Regular DHT's or structured networks does not support group communication per default, but there has been build different extensions which supports multi-casting and thereby making it possible to establish communication between certain group of nodes in the network. 
+A tree structure is normally used for supporting multicast functionality, where the tree ensures the relation between nodes associated to the group. This tree structure can be build in different ways depending on the trade-off's between speed, load-balancing, and ordering.
+
+The top-down approach of building a tree is about using the root to distribute data to other group members in the tree. This means that everytime a peer needs to join, send or leave a group it need to contact the root of the group and afterward the root will initiate the multicasting. This approach ensures by default a correct ordering of the communicated messages. 
+
+The crawl approach of building a tree is to make the members of the tree forward th e messages to their children and parents without using any central nodes. Thus all nodes in the tree are equally loaded and the messages are distributed faster in the network in contrast to the top-down approach. However the sequence of the messages is hard to maintain. 
+
 \subsection{SCRIBE}
 SCRIBE is a very well-known extension build on top of Pastry which supports group communication. 
-To create a group in SCRIBE a groupID is generated and a ``create'' message is then routed in the Pastry network to the node whose ID is closest to the groupID. This receiving node becomes the root without knowing it as it only keeps the groupID saved as normal data.
-It is now possible to join this newly created group by sending a ``join'' message towards the groupID, then a node in the Pastry network will receive the message and add the sending node as a child and if this node is not a forwarder it will send a ``join'' message towards the groupID and thus become a forwarder for the group. This means there now is a new group member in the group and also a new forwarder. Every node in a group is forwarder, but a forwarder is not necessary a member of  the group.
+The tree which is build by SCRIBE is not a part of Pastry, but it is build on top of Pastry. SCRIBE has implemented the top-down approach. 
 
-To leave a group a node will first check if it has any children and if it hasn't is sends a ``leave'' message to its parent which continuous recursively up the tree otherwise it stays as forwarder but not a member.
+To create a group in SCRIBE a groupID is generated and a ``create'' message is then routed in the Pastry network to the node whose ID is closest to the groupID. This receiving node becomes the root and it will keep the groupID saved as a normal keyvalue pair.
 
-The tree which is build by SCRIBE is not a part of Pastry, but it is build on top of Pastry. It can be implemented with two different approaches; either as a top-down approache or as crawl.
+To join a created group a ``join'' message is send towards the groupID, then a node in the Pastry network will receive the message and add the sending node as a child and if this parent node is not a forwarder it will send a ``join'' message towards the groupID and thus become a forwarder for the group. This means that a group consists both of groupmembers and forwarders. Every node in a group is a forwarder, but a forwarder is not necessarily a member of  the group. 
 
-%Different ways of message passing (Sendign messages):
-%1-Top-down --> sequence is easy to handle but huge load on root --> outside of pastry 
-%2-Crawl (reminds of Gnutella) --> equal load on all nodes and root but hard to maintain sequence
-
-The choice of implementation for use depends on use case
-
-
-
-
-
-
-
-
-
-
-
-
-
+To leave a group, a node will first check if it has any children and if it hasn't is sends a ``leave'' message to its parent which continuous recursively up the tree otherwise it stays as forwarder but not a member.
 
  
-\subsection{Grup Messaging for Kademlia}
+\subsection{Group Messaging for Kademlia}
 Another extension is made a eaearch aetiklce ,,,
 
 \section{Confidential Communication}
