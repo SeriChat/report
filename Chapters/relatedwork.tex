@@ -60,10 +60,15 @@ Kademlia stands out from the other DHT P2P systems by maintaining the routing ta
 %While Kademlia may flood the network with lookups, it does not flood the network with control messages; however, this together may generate more data traffic.
 
 \subsubsection{TomP2P}
-TomP2P is a JAVA implementaion of Kademlia protocol with many extra features. TomP2P allows for instance automatic set up of NAT traversal, which checks if peers is reachable by its external address. In the case of non reachable node, TomP2P will first try to use UPNP and NATPMP to set up port forwarding on the router and second it will allows setting up distributed relaying. TomP2P enables custom behavior for built-in methods like GET and PUT. Thus developers is able to write some custom code which will be executed when the methods is executed.
+TomP2P is a JAVA implementation of Kademlia protocol with many extra features. TomP2P allows for instance automatic set up of NAT traversal which can solve the challenge with unreachable external peers. This is important when using TomP2P as an infrastructure for a cross-platform applications that among others run on mobile devices.
 
-%- Replication
-%- Security
+ TomP2P enables custom behaviour for built-in methods like GET and PUT. Thus developers is able to write some custom code to be executed when a key-value for instance is requested.
+
+Replication in TomP2P is categorized as indirect replication and direct replication. The direct replication is the original replication mechanism defined in the Kademlia design where each node constantly publish its to the closest nodes. The indirect replication is about extending the responsibility of the publishing functionality by also making the neighbours contribute.
+    
+The security implementation in TomP2P ensures data integrity, which means preventing unauthorized users to alter the stored key-values.This is done by using the author's public key to sign the key-values.
+
+Encrypted communication is not a part of TomP2P and thereby confidentiality is not ensured.
 
 %Each TomP2P node has a table that can be configured either to be disk-based or memory-based to store its values. 
 
@@ -87,8 +92,9 @@ To join a created group a ``join'' message is send towards the groupID, then a n
 To leave a group, a node will first check if it has any children and if it hasn't is sends a ``leave'' message to its parent which continuous recursively up the tree otherwise it stays as forwarder but not a member.
 
  
-\subsection{Group Messaging for Kademlia}
-Another extension is made a eaearch aetiklce ,,,
+\subsection{Kademlia Group Extension}
+A research article presents an extension to the Kademlia network that provides group communication \cite{groKdml}.  This article discusses two tree-architectures; the first one is the top-down approach also used in SCRIBE and the second one is the crawl approach.
+
 
 \section{Confidential Communication}
 \subsection{Encrypted Communication}
