@@ -15,10 +15,15 @@ Join
 Comm
 
 \section{Fault-tolerance}
-Fault-tolerance in the Kademlia infrastructure is ensured by TomP2P, but the tree-structure for the group communication is not. The tree-structure is vulnerable because for instance if the root in the tree fails the whole communication goes down. 
+Fault-tolerance in the Kademlia infrastructure is ensured by TomP2P, but the tree-structure for the group communication is not. The tree-structure is vulnerable because for instance if the root in the tree fails the whole communication goes down. Therefore fault-tolerance for the tree-structure should be handled. There is two scenarios when handling fault-tolerance in the tree-structure. The first is... 
+\begin{enumerate}
+	\item root
+	\item ffs
+\end{enumerate}
 
 \section{Confidentiality}
-Encryption is integrated in these layers.
+To ensure confidentiality it is important to treat two cases in the group chat. The first case is when a node joins a group the sent password has to be encrypted. As the communication is only between two persons it made most sense to use asymmetric encryption. For this asymmetric encryption the RSA algorithm is used by encrypting the password using the public key for the Group Owner.  
+The second case is when a message is sent inside the group, where this message should stay private such that only the group members can read the message. In this case the communication is between one to many and thereby its chosen to use symmetric encryption. For symmetric  encryption the AES algorithm is used. An AES cryptographic key is received by each member joining the group and this key is kept safe using the transfer with help of RSA. All messages between the groups are encrypted by the known AES cryptographic key.  
 
 %Many of the other natural sciences have labs with equipment that has
 %to be configured correctly to experimentally test stated hypotheses.
