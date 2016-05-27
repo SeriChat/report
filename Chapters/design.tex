@@ -1,8 +1,24 @@
 \chapter{Design}
 \label{cha:design}
+In this chapter the design of SeriChat which aims to fulfill the requirements defined in chapter \ref{cha:introduction} is presented.
 
-\section{Overview}
-\section{}
+\section{System Overview}
+The group chat system, SeriChat, consists of two layers. The first layer is the Kademlia infrastructure based on the TomP2P implementation. The second layer implements the extension with group functionality on top of TomP2P. This layer uses Kademlia functionalities, but it also in some cases communicate independent of Kademlia. 
+
+\section{Group Communication}
+Group Communication is created by building a separate tree-structure. The tree-structure is build by help of create, join, and leave commands
+
+Create
+
+Join
+
+Comm
+
+\section{Fault-tolerance}
+Fault-tolerance in the Kademlia infrastructure is ensured by TomP2P, but the tree-structure for the group communication is not. The tree-structure is vulnerable because for instance if the root in the tree fails the whole communication goes down. 
+
+\section{Confidentiality}
+Encryption is integrated in these layers.
 
 %Many of the other natural sciences have labs with equipment that has
 %to be configured correctly to experimentally test stated hypotheses.
