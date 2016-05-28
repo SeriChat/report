@@ -5,13 +5,25 @@ In this chapter the design of SeriChat which aims to fulfill the requirements de
 The group chat system, SeriChat, consists of two layers. The first layer is the Kademlia infrastructure based on the TomP2P implementation. The second layer implements the extension with group functionality on top of TomP2P. This layer uses Kademlia functionalities, but it also in some cases communicate independent of Kademlia. 
 
 \section{Group Communication}
-Group Communication is created by building a separate tree-structure. The tree-structure is build by help of create, join, and leave commands
+Group Communication is created by building a separate tree-structure. The tree-structure is build by using binary-tree where the root is the \textit{GroupOwner}. In some P2P group-chat design like Scribe, the root is allways the \textit{GroupInfoHolder}. However SeriChat focuses on fairness and thus it is chosen to not doing that. The same is valid for forwarder concept in Scribe. It is not fair to load a peer which is not member of a certain group.
 
-Create
+In the following subsections the design of four scenario in group chatting is presented. Those scenarios are: \textit{create}, \textit{join}, \textit{leave} and \textit{communicate}.
 
-Join
+\subsection{Create}
+When a peer choose to create a group it puts an entry in the DHT. The entry have a key consisting of the hashes of the \textit{GroupName} and a value consisting of information about the group, like the ip-address, the peer-id and the public-key of the root. The peer which holds this entry is called \textit{GroupInfoHolder} as illustrated in \autoref{fig:createScenario}. The \textit{GroupOwner} lastly generates and AES secret-key for the newly created group and stored in itself.
 
-Comm
+\subsection{Join}
+When a peer choose to join a group it looks up the hashes of the \textit{GroupName} to get informations needed for joining the group. It then uses the received value to send a joining event direct to the root containing the password needed to be authorized by the root which is also the \textit{GroupOwner}. Both the \textit{GroupName} and the password has to be obtained from outside the SeriChat. If the authorizing was successful the root replies with the \textit{GroupSecretkey}. \autoref{fig:joinScenario} illustrate the join scenario.
+
+As it is clear SeriChat uses top-down approach in the joining scenario. The top-down approach gives the opportunity to balance the binary-tree because the root and the members have then the decision about where the new member should be placed. The algorithm used for the placement is fairly simply. Every time a root or a member forwards a new member to the children, the choice is the inverse of the previous choice. This results in a balanced tree because the members are always switching between forwarding to the right-child or forwarding to the left-child.
+
+\subsection{Leave}
+When a peer choose to the leave the group it informs its children by sending a leave event. The children will then inform the root about their parent's leaving together with a rejoin event. The system finds an new place for them by the same algorithm described in the join scenario.
+
+\subsection{Communicate}
+When a peer choose to send a message to the group members a forward message event, containing the message itself,  is sent direct to the root. The root reads the message and forwards it by using the same event to the children. The children reads also the message and forwards the event and so on and so forth.
+
+SeriChat uses also the top-down approach in this scenario. The reason for that is that the top-down approach ensures a correct order of receiving the messages for all the members without any extra overhead.
 
 \section{Fault-tolerance}
 Fault-tolerance in the Kademlia infrastructure is ensured by TomP2P, but the tree-structure for the group communication is not. The tree-structure is vulnerable because for instance if the root in the tree fails the whole communication goes down. Therefore fault-tolerance for the tree-structure should be handled. There is two scenarios when handling fault-tolerance in the tree-structure. The first is... 

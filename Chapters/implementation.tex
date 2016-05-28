@@ -27,13 +27,16 @@
 %evaluation and conclusions.
 %System 
 This chapter describes the developed prototype of the group chat system according to described design in chapter \ref{cha:design}.
-SeriChat is implemented in Java 1.8 and one of the reasons for this choice is to satisfy the goal of being a cross-platform implementation. The second reason is because of TomP2P is implemented in Java. TomP2P is the most up-to-date implementation of the Kademlia infrastructure. \autoref{fig:umlSeriChat} presents the SeriChat architecture and its dependency to the TomP2P libraries.
+SeriChat is implemented in Java 1.8 and one of the reasons for this choice is to satisfy the goal of being a cross-platform implementation. The second reason is because of TomP2P is implemented in Java. TomP2P is the most up-to-date implementation of the Kademlia infrastructure. \autoref{fig:umlSeriChat} presents the SeriChat architecture and its dependencies to the TomP2P libraries.
 
 \begin{figure}[bth]
-	\subfloat[Pan ma signo.]
+	\subfloat[SeriChat UML class-diagram]
 	{\label{fig:umlSeriChat}%
-		\includegraphics[width=1\linewidth]{gfx/example_2}}
+		\includegraphics[width=1\linewidth]{gfx/seriChatUML}}
 \end{figure}
+
+Description of the different classes...
+
 \section{TomP2P}
 TomP2P last stable version, 4.4, has been released at 20th of May, 2013. However, several beta versions has been released subsequently and the newest of them was TomP2P 5.0-Beta8.
 
@@ -43,14 +46,31 @@ In the beginning of this project it was decided to use the last stable version b
 The key-values in a DHT are in principle overwritable, this is not acceptable by SeriChat groups which is dependable of the availability af the group-keys. However TomP2P has thought about this challenge and provides an entry signing mechanism. When you are putting an entry you can choose to sign the entry by the public-key of the owner. By doing that TomP2P will ensure that the signed entry can only be deleted, updated or overwritten by the author himself. \autoref{lst:signingEntry} shows an how SeriChat let the group owner signs the group-key entry by his pubic-key that is provided by the \textit{keyPair } variable.
 
 \begin{lstlisting}[language=java,frame=tblr,caption={Entry signing by the group owner},label=lst:signingEntry]
-ownerPeerDHT.put(groupId).data( new Data(new GroupKey(ownerPeerDHT.peerAddress(), keyPair.getPublic())).protectEntry(keyPair)).sign().start().awaitUninterruptibly();
+ownerPeerDHT.put(groupId).data( new Data( new GroupKey(
+	ownerPeerDHT.peerAddress(), keyPair.getPublic()))
+	.protectEntry(keyPair)).sign().start().awaitUninterruptibly();
 \end{lstlisting}
 
 \subsection{Direct communication}
-Senddirect
+SeriChat group chat system uses, as explained the chaper \ref{cha:design}, direct communication between the group members. This functionality is provided by TomP2P system's \textit{sendDirect} method. The method accepts a PeerAddress instance which contains the ip-address and the port number. \autoref{lst:sendDirectToRoot} shows how a group member contacts the root directly by using the \textit{sendDirect} method, to get a forwarded to the other group members.
+\begin{lstlisting}[language=java,frame=tblr,caption={Sending direct to the root},label=lst:sendDirectToRoot]
+SeriEvent seriEvent = new SeriEvent(EventType.FORWARD_MESSAGE, groupName, msgBytes, nickName);
+PeerAddress root = group.getRootAddress();
+sendingPeerDHT.peer().sendDirect(root).object(seriEvent).start().awaitUninterruptibly();
+\end{lstlisting}
 
+\section{Implementing confidentiality}
+Java programming language provides two packages to support cryptography, \textit{java.security} package and \textit{javax.crypto} package. Those two packages is used to make the SeriChat confidential. \autoref{lst:cryptoExample} is a code snippet of the \textit{Join} event-handler. The received password is decrypted by a RSA private-key. Then only if the password matches the group password, an AES secret key is encrypted by RSA public-key and replied to the requester.
+\begin{lstlisting}[language=java,frame=tblr,caption={Example of \textit{java.security} and \textit{javax.crypto} usage},label=lst:cryptoExample]
+cipher = Cipher.getInstance("RSA");
+cipher.init(Cipher.DECRYPT_MODE, keyPair.getPrivate());
+String pass = new String(cipher.doFinal(event.getPassword()));
+if (group.getPassword().equals(pass)) {
+cipher.init(Cipher.ENCRYPT_MODE, event.getPublicKey());
+...
+return cipher.doFinal(group.getGrpAESKey().getEncoded());
+}
+\end{lstlisting}
 
-Java -- encryption
-
-
-not-implemented -- fault-tolerance
+\section{Fault-tolerance}
+The fault-tolerance design described in chapter \ref{cha:design} was not implemented during to some time constraints in the project.
