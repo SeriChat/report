@@ -27,10 +27,28 @@
 %evaluation and conclusions.
 %System 
 This chapter describes the developed prototype of the group chat system according to described design in chapter \ref{cha:design}.
-SeriChat is implemented in Java 1.8 and one of the reasons for this choice is because of TomP2P is implemented in Java. 
+SeriChat is implemented in Java 1.8 and one of the reasons for this choice is to satisfy the goal of being a cross-platform implementation. The second reason is because of TomP2P is implemented in Java. TomP2P is the most up-to-date implementation of the Kademlia infrastructure. \autoref{fig:umlSeriChat} presents the SeriChat architecture and its dependency to the TomP2P libraries.
 
+\begin{figure}[bth]
+	\subfloat[Pan ma signo.]
+	{\label{fig:umlSeriChat}%
+		\includegraphics[width=1\linewidth]{gfx/example_2}}
+\end{figure}
+\section{TomP2P}
+TomP2P last stable version, 4.4, has been released at 20th of May, 2013. However, several beta versions has been released subsequently and the newest of them was TomP2P 5.0-Beta8.
 
-TomP2P ::/ 
+In the beginning of this project it was decided to use the last stable version because of the stability but also because of that a big part of the provided documentation, which was very poor, was written for version 4.4. But after coming in contact with the TomP2P developer, Thomas Bocek, he strongly recommended to use the last beta release due to the many new futures and the many bugs fixes which have been done sense version 4.4. He also referred to his GitHub repository where he has a couple of up-to-date examples explaining how to use the last version.
+
+\subsection{Signing key-values}
+The key-values in a DHT are in principle overwritable, this is not acceptable by SeriChat groups which is dependable of the availability af the group-keys. However TomP2P has thought about this challenge and provides an entry signing mechanism. When you are putting an entry you can choose to sign the entry by the public-key of the owner. By doing that TomP2P will ensure that the signed entry can only be deleted, updated or overwritten by the author himself. \autoref{lst:signingEntry} shows an how SeriChat let the group owner signs the group-key entry by his pubic-key that is provided by the \textit{keyPair } variable.
+
+\begin{lstlisting}[language=java,frame=tblr,caption={Entry signing by the group owner},label=lst:signingEntry]
+ownerPeerDHT.put(groupId).data( new Data(new GroupKey(ownerPeerDHT.peerAddress(), keyPair.getPublic())).protectEntry(keyPair)).sign().start().awaitUninterruptibly();
+\end{lstlisting}
+
+\subsection{Direct communication}
+Senddirect
+
 
 Java -- encryption
 
