@@ -79,7 +79,7 @@ A tree structure is normally used for supporting multicast functionality, where 
 
 The top-down approach of building a tree is about using the root to distribute data to other group members in the tree. This means that everytime a peer needs to join, send or leave a group it need to contact the root of the group and afterward the root will initiate the multicasting. This approach ensures by default a correct ordering of the communicated messages. 
 
-The crawl approach of building a tree is to make the members of the tree forward th e messages to their children and parents without using any central nodes. Thus all nodes in the tree are equally loaded and the messages are distributed faster in the network in contrast to the top-down approach. However the sequence of the messages is hard to maintain. 
+The crawl approach of building a tree is to make the members of the tree forward the messages to their children and parents without using any central nodes. Thus all nodes in the tree are equally loaded and the messages are distributed faster in the network in contrast to the top-down approach. However the sequence of the messages is hard to maintain. 
 
 \subsection{SCRIBE}
 SCRIBE is a very well-known extension build on top of Pastry which supports group communication. 
@@ -93,12 +93,13 @@ To leave a group, a node will first check if it has any children and if it hasn'
 
  
 \subsection{Kademlia Group Extension}
-A research article presents an extension to the Kademlia network that provides group communication \cite{groKdml}.  This article discusses two tree-architectures; the first one is the top-down approach also used in SCRIBE and the second one is the crawl approach.
-%TODO: Not done yet
+A research article presents an extension to the Kademlia network that provides group communication \cite{groKdml}. This article is inspired from SCRIBE and uses many of the same elements used in SCRIBE. The article discusses two tree-architectures; the first one is the top-down approach also used in SCRIBE and the second one is the crawl approach.
 
-%
-%maintenance
+The Kademlia extension uses in their case study the crawl approach for building its tree and compares it with SCRIBE. Measurements are made for message delay when multicasting messages and the amount of transferred data. The results from the case study shows that there is not much difference in the message delay between the two systems even though the crawl approach was expected to be faster than the top-down approach. The reason could be that Pastry piggy-backs the messages in the lookup request and thereby saves some time. However, the results for the other measurements are as expected where SCRIBE uses more data than the Kademlia extension because of the huge amount of data sent for maintaining the routing table in Pastry.
+
 %case study - crawl is used
+The article also discusses how to keep the tree fault-tolerant and proposes that every tree member should periodically send a control message to its parent. Another aspect is if a root member fails, which is a major problem. For maintaining the tree root, multiple roots are presented such that the duplicated root can replace the original root in case it fails.
+
 
 \section{Confidential Communication}
 Keeping the communication private from external people is depending on two factors; the first one is that the group members agrees on a secret key only known by the group members and the second factor is to encrypt the communication using the agreed secret key.
