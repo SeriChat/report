@@ -12,7 +12,7 @@ In the following subsections the design of four scenarios in group chatting is p
 \subsection{Create}
 When a node choose to create a group it puts an entry in the DHT. The entry has a key consisting of the hashes of the \emph{GroupName} and a value consisting of information about the group, like the ip-address, the node-id, and the public-key of the root. The node which holds this entry is called \emph{GroupInfoHolder} as illustrated in \autoref{fig:createScenario}. The \emph{GroupOwner} lastly generates an \emph{AES} secret-key for the newly created group and store it inside itself.
 
-\begin{figure}[x]
+\begin{figure}[bth]
 	\centering
 	\includegraphics[width=0.7\linewidth]{gfx/createScenario}}
 	\caption{Create scenario}
