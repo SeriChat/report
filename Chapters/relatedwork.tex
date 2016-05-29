@@ -28,7 +28,7 @@ If a peer receives a lookup request it will use the routing table to find a conc
 The routing table used in Pastry is based on prefix matching and consists of three layers; \emph{Leaf set}, \emph{Routing table}, and \emph{Neighborhood set}. These layers are visualized in \autoref{fig:pastryrouting}.
 \begin{figure}[bth]
 \includegraphics[width=1\linewidth]{gfx/pastry-routing}
-\caption[routingtable]{Routing table for Pastry} \label{fig:pastryrouting}
+\caption[Routing table for Pastry]{Routing table for Pastry} \label{fig:pastryrouting}
 \end{figure}
 
 When a message is send to a specific node this node's id is looked up in the routing table, where it first will check if the key fits in the range of it's \emph{leaf set}. If the key is not covered by the \emph{leaf set} the \emph{routing table} inside the Pastry routing table is used to forward the message to a node that shares a common prefix. 
