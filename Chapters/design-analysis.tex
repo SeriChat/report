@@ -1,16 +1,16 @@
 \chapter{Design and Analysis} \label{cha:design}
-In this chapter the design of SeriChat which aims to fulfill the requirements defined in chapter \ref{cha:introduction} is presented.
+In this chapter the design of SeriChat, which aims to fulfill the requirements defined in \autoref{cha:introduction}, is presented.
 
 \section{System Overview}
-The group chat system, SeriChat, consists of two layers. The first layer is the Kademlia infrastructure based on the TomP2P implementation. The second layer implements the extension with group functionality on top of TomP2P. This layer uses Kademlia functionalities, but it also in some cases communicate independent of Kademlia. 
+The group chat system, SeriChat, consists of two layers. The first layer is the Kademlia infrastructure based on the TomP2P implementation. The second layer implements the extension with group functionality on top of TomP2P. This layer uses the standard Kademlia functionalities, but it also in some cases communicate using extra features outside of Kademlia. 
 
 \section{Group Communication}
-Group Communication is created by building a separate tree-structure. The tree-structure is build by using binary-tree where the root is the \textit{GroupOwner}. In some P2P group-chat design like Scribe, the root is allways the \textit{GroupInfoHolder}. However SeriChat focuses on fairness and thus it is chosen to not doing that. The same is valid for forwarder concept in Scribe. It is not fair to load a peer which is not member of a certain group.
+Group Communication is created by building a separate tree-structure. The tree-structure is build as a binary-tree where the root is the \emph{GroupOwner}. In some P2P group chat designs like SCRIBE, the root is always the \emph{GroupInfoHolder}. However SeriChat focuses on fairness and thus we have chosen to not put unnecessary load or responsibility on a specific node in the group. The same is valid for the concept of \emph{forwarder} in SCRIBE, were nodes that are not members of the group can act as \emph{forwarder}. It is not fair to load a node which is not a member of a certain group and therefore we have chosen to design this part differently from SCRIBE.
 
-In the following subsections the design of four scenario in group chatting is presented. Those scenarios are: \textit{create}, \textit{join}, \textit{leave} and \textit{communicate}.
+In the following subsections the design of four scenarios in group chatting is presented. These scenarios are: \emph{create}, \emph{join}, \emph{leave} and \emph{communicate}.
 
 \subsection{Create}
-When a peer choose to create a group it puts an entry in the DHT. The entry have a key consisting of the hashes of the \textit{GroupName} and a value consisting of information about the group, like the ip-address, the peer-id and the public-key of the root. The peer which holds this entry is called \textit{GroupInfoHolder} as illustrated in \autoref{fig:createScenario}. The \textit{GroupOwner} lastly generates and AES secret-key for the newly created group and stored in itself.
+When a node choose to create a group it puts an entry in the DHT. The entry has a key consisting of the hashes of the \emph{GroupName} and a value consisting of information about the group, like the ip-address, the node-id, and the public-key of the root. The node which holds this entry is called \emph{GroupInfoHolder} as illustrated in \autoref{fig:createScenario}. The \emph{GroupOwner} lastly generates an \emph{AES} secret-key for the newly created group and store it inside itself.
 
 \begin{figure}[bth]
 	\centering
@@ -21,7 +21,7 @@ When a peer choose to create a group it puts an entry in the DHT. The entry have
 
 
 \subsection{Join}
-When a peer choose to join a group it looks up the hashes of the \textit{GroupName} to get informations needed for joining the group. It then uses the received value to send a joining event direct to the root containing the password needed to be authorized by the root which is also the \textit{GroupOwner}. Both the \textit{GroupName} and the password has to be obtained from outside the SeriChat. If the authorizing was successful the root replies with the \textit{GroupSecretkey}. \autoref{fig:joinScenario} illustrates the join scenario.
+When a node choose to join a group, it looks up the hashes of the \emph{GroupName} to get informations needed for joining the group. It then uses the received value to send a joining event directly to the root containing the password needed to be authorized by the root which is also the \emph{GroupOwner}. Both the \emph{GroupName} and the password has to be obtained from outside the SeriChat. If the authorizing was successful the root replies with the \emph{GroupSecretkey}. \autoref{fig:joinScenario} illustrates the join scenario.
 
 \begin{figure}[bth]
 	\myfloatalign
@@ -33,10 +33,10 @@ When a peer choose to join a group it looks up the hashes of the \textit{GroupNa
 	\caption{Join scenario}\label{fig:joinScenario}
 \end{figure}
 
-As it is clear SeriChat uses top-down approach in the joining scenario. The top-down approach gives the opportunity to balance the binary-tree because the root and the members have then the decision about where the new member should be placed. The algorithm used for the placement is fairly simply. Every time a root or a member forwards a new member to the children, the choice is the inverse of the previous choice. This results in a balanced tree because the members are always switching between forwarding to the right-child or forwarding to the left-child.
+As it is clear SeriChat uses top-down approach in the joining scenario. The top-down approach gives the opportunity to balance the binary-tree because the root and the members have then the decision about where the new member should be placed. The algorithm used for the placement is fairly simple. Every time a root or a member forwards a new member to the children, the choice is the inverse of the previous choice. This results in a balanced tree because the members are always switching between forwarding to the right-child or forwarding to the left-child.
 
 \subsection{Leave}
-When a peer choose to the leave the group it informs its children by sending a leave event. The children will then inform the root about their parent's leaving together with a rejoin event. The system finds an new place for them by the same algorithm described in the join scenario.
+When a peer choose to leave the group it informs its children by sending a leave event. The children will then inform the root about their parent's leaving together with a rejoin event. The system finds an new place for them by the same algorithm described in the join scenario.
 
 
 
@@ -57,11 +57,11 @@ SeriChat uses also the top-down approach in this scenario. The reason for that i
 \end{figure}
 
 \section{Fault-tolerance}
-Fault-tolerance in the Kademlia infrastructure is ensured by TomP2P, but the tree-structure for the group communication is not. The tree-structure is vulnerable because the members depends on each other to fulfill the communication and a single failure can have a huge impact specially when it is the root that fails. Fault-tolerance for the tree-structure should therefore be ensured. In the following subsections the design of handling two failure scenario in group chatting is presented. Those scenarios are: \textit{failed root} and \textit{failed member}.
+Fault-tolerance in the Kademlia infrastructure is ensured by TomP2P, but the tree-structure for the group communication is not. The tree-structure is vulnerable because the members depends on each other to fulfill the communication and a single failure can have a huge impact specially when it is the root that fails. Fault-tolerance for the tree-structure should therefore be ensured. In the following subsections the design of handling two failure scenario in group chatting is presented. Those scenarios are: \emph{failed root} and \emph{failed member}.
 
 \subsection{Failed Root}
 When a root fails one of the group member have to take over as soon as possible.
-The \textit{GroupOwner} chooses therefore one or two of the members and makes them to co-owners. The co-owners receives a replication of the \textit{GroupOwner}'s data and are placed at the same level as the root as illustrated in \autoref{fig:failedRoot}. The co-owners have to monitor the \textit{GroupOwner} and take over the job (One of them) when necessary. The monitoring is done by sending hearbeats events periodically from the \textit{GroupOwner} to the co-owners. Thereby are the co-owners able to indicates a failed root as soon as the heartbeat events are interrupted.
+The \emph{GroupOwner} chooses therefore one or two of the members and makes them to co-owners. The co-owners receives a replication of the \emph{GroupOwner}'s data and are placed at the same level as the root as illustrated in \autoref{fig:failedRoot}. The co-owners have to monitor the \emph{GroupOwner} and take over the job (One of them) when necessary. The monitoring is done by sending hearbeats events periodically from the \emph{GroupOwner} to the co-owners. Thereby are the co-owners able to indicates a failed root as soon as the heartbeat events are interrupted.
 
 \begin{figure}[bth]
 	\centering
