@@ -25,7 +25,7 @@ Each peer in the network has a routing table which provides some knowledge about
 The routing table consists of a list of peers with unique id's mapping to the addresses of some peers in the network.
 If a peer receives a lookup request it will use the routing table to find a concrete peer also known as node by routing through the nodes with closest id's.
 
-The routing table used in Pastry is based on prefix matching and consists of three layers; \emph{Leaf set}, \emph{Routing table}, and \emph{Neighborhood set}. These layers are visualized in figure \ref{fig:pastryrouting}.
+The routing table used in Pastry is based on prefix matching and consists of three layers; \emph{Leaf set}, \emph{Routing table}, and \emph{Neighborhood set}. These layers are visualized in \autoref{fig:pastryrouting}.
 \begin{figure}[bth]
 \includegraphics[width=1\linewidth]{gfx/pastry-routing}
 \caption[routingtable]{Routing table for Pastry} \label{fig:pastryrouting}
@@ -51,7 +51,7 @@ Kademlia is another structured P2P network functioning as a DHT. Kademlia focuse
 Every Kademlia node owns a 160-bit long unique identifier. The keys are stored at the node with equal id or with the shortest distance.
 The distance between nodes is determined using bitwise \emph{exclusive OR} (XOR). The XOR is unidirectional and it therefore ensure a unique distance for every node. Unidirectionality means that all lookups for a specific key end at the same path, regardless of the originating node, enabling caching frequently requested key-values and thus lessens the load on nodes with popular contents.
 
-Nodes in Kademlia is treated as leaves in a binary tree. The position of nodes is determined by the shortest unique prefix of its ID as illustrated by figure \ref{fig:kademliaprefix}. Every node see the rest of the binary tree as divided subtrees. The closest subtree consists of nodes with an id that share the longest common prefix with the node. Every node is ensured to know at least one node in each of the subtrees. That info is stored in the k-bucket, which is used for the lookup process. When a node receives a lookup request it will search for a node inside its bucket which shares the longest common prefix with the lookup-key. The discovered node is then used to another lookup request. This process is repeated iteratively until the required node is reached.
+Nodes in Kademlia is treated as leaves in a binary tree. The position of nodes is determined by the shortest unique prefix of its ID as illustrated by \autoref{fig:kademliaprefix}. Every node see the rest of the binary tree as divided subtrees. The closest subtree consists of nodes with an id that share the longest common prefix with the node. Every node is ensured to know at least one node in each of the subtrees. That info is stored in the k-bucket, which is used for the lookup process. When a node receives a lookup request it will search for a node inside its bucket which shares the longest common prefix with the lookup-key. The discovered node is then used to another lookup request. This process is repeated iteratively until the required node is reached.
 
 Kademlia stands out from the other DHT P2P systems by maintaining the routing tables with a minimal effort. Everytime a node receives a request it will update its k-bucket with info about the requesting node. Thus the k-bucket will stay up-to-date without any manual effort. This is a big advantage compared with Pastry which uses a huge amount of control-traffic to maintain it's routing table.
 
@@ -85,9 +85,9 @@ The crawl approach of building a tree is to make the members of the tree forward
 SCRIBE is a very well-known extension build on top of Pastry which supports group communication. 
 The tree which is build by SCRIBE is not a part of Pastry, but it is build on top of Pastry. SCRIBE has implemented the top-down approach. 
 
-To create a group in SCRIBE a groupID is generated and a ``create'' message is then routed in the Pastry network to the node whose ID is closest to the groupID. This receiving node becomes the root and it will keep the groupID saved as a normal keyvalue pair.
+To create a group in SCRIBE a \emph{groupID} is generated and a ``create'' message is then routed in the Pastry network to the node whose ID is closest to the \emph{groupID}. This receiving node becomes the root and it will keep the \emph{groupID} saved as a normal key-value pair.
 
-To join a created group a ``join'' message is send towards the groupID, then a node in the Pastry network will receive the message and add the sending node as a child and if this parent node is not a forwarder it will send a ``join'' message towards the groupID and thus become a forwarder for the group. This means that a group consists both of groupmembers and forwarders. Every node in a group is a forwarder, but a forwarder is not necessarily a member of  the group. 
+To join a created group a ``join'' message is send towards the \emph{groupID}, then a node in the Pastry network will receive the message and add the sending node as a child and if this parent node is not a forwarder it will send a ``join'' message towards the \emph{groupID} and thus become a forwarder for the group. This means that a group consists both of group members and forwarders. Every node in a group is a forwarder, but a forwarder is not necessarily a member of  the group. 
 
 To leave a group, a node will first check if it has any children and if it hasn't is sends a ``leave'' message to its parent which continuous recursively up the tree otherwise it stays as forwarder but not a member.
 
