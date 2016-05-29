@@ -16,24 +16,24 @@ There are many existing solutions for P2P networks. In the coming subsections a 
 
 Many P2P systems are implemented as Distributed Hash Tables (DHT) which are a distributed key-value store.
 DHT provides look-up services similar to regular hash tables.
-DHT provides a good load balance by distributing key-values evenly between peers which is an important factor for P2P systems.
+DHT also provides a good load balance by distributing key-values evenly between peers which is an important factor for P2P systems.
 
 \subsection{Pastry}
-Pastry is a structured P2P network, that implements DHT, designed to be an scalable and fault-tolerant infrastructure for other applications. 
+Pastry is a structured P2P network, that implements DHT, designed to be a scalable and fault-tolerant infrastructure for other applications. 
 %The keys and the values are stored in the peers and these can then be used to build knowledge about the peers in the network.
 Each peer in the network has a routing table which provides some knowledge about the other peers in the network. These routing tables are also maintained by each peer.
 The routing table consists of a list of peers with unique id's mapping to the addresses of some peers in the network.
 If a peer receives a lookup request it will use the routing table to find a concrete peer also known as node by routing through the nodes with closest id's.
 
-The routing table used in Pastry is based on prefix matching and consists of three layers; Leaf set, Routing table, and Neighborhood set.
+The routing table used in Pastry is based on prefix matching and consists of three layers; \emph{Leaf set}, \emph{Routing table}, and \emph{Neighborhood set}. These layers are visualized in figure \ref{fig:pastryrouting}.
 \begin{figure}[bth]
 \includegraphics[width=1\linewidth]{gfx/pastry-routing}
 \caption[routingtable]{Routing table for Pastry} \label{fig:pastryrouting}
 \end{figure}
 
-When a message is send to a specific node this node's id is looked up in the routing table, where it first will check if the key fits in the range of it's \emph{leaf set}. If the key is not covered by the \emph{leaf set} the routing table inside the Pastry routing table is used to forward the message to a node that shares a common prefix. 
+When a message is send to a specific node this node's id is looked up in the routing table, where it first will check if the key fits in the range of it's \emph{leaf set}. If the key is not covered by the \emph{leaf set} the \emph{routing table} inside the Pastry routing table is used to forward the message to a node that shares a common prefix. 
 
-Pastry routes with O(log\textsubscript{2\textsuperscript b} N) routing hops. A trade-off between the maximum number of hop and the size of the routing table is configured by a configuration parameter ``b''.
+Pastry routes with O(log\textsubscript{2\textsuperscript b} N) routing hops. A trade-off between the maximum number of hop and the size of the \emph{routing table} is configured by a configuration parameter ``b''.
 An advantage in Pastry is that it prefers nodes that are close in the ip-space and thereby gives a high performance in the real world.
 
 %with the key by at least one digit.
@@ -46,10 +46,10 @@ An advantage in Pastry is that it prefers nodes that are close in the ip-space a
 %use peer you know
 
 \subsection{Kademlia}
-Kademlia is another structured P2P network functioning as a DHT. Kademlia focuses on scalability, load-balancing, and fault-tolerance. Kademlia is used in many applications with millions of users including BitTorent.
+Kademlia is another structured P2P network functioning as a DHT. Kademlia focuses on scalability, load-balancing, and fault-tolerance. Kademlia is used in many applications with millions of users including \emph{BitTorrent}.
 
 Every Kademlia node owns a 160-bit long unique identifier. The keys are stored at the node with equal id or with the shortest distance.
-The distance between nodes is determined using bitwise exclusive or (XOR). The XOR is unidirectional and it therefore ensure a unique distance for every node. Unidirectionality means that all lookups for a specific key end at the same path, regardless of the originating node, enabling caching frequently requested key-values and thus lessens the load on nodes with popular contents.
+The distance between nodes is determined using bitwise \emph{exclusive OR} (XOR). The XOR is unidirectional and it therefore ensure a unique distance for every node. Unidirectionality means that all lookups for a specific key end at the same path, regardless of the originating node, enabling caching frequently requested key-values and thus lessens the load on nodes with popular contents.
 
 Nodes in Kademlia is treated as leaves in a binary tree. The position of nodes is determined by the shortest unique prefix of its ID as illustrated by figure \ref{fig:kademliaprefix}. Every node see the rest of the binary tree as divided subtrees. The closest subtree consists of nodes with an id that share the longest common prefix with the node. Every node is ensured to know at least one node in each of the subtrees. That info is stored in the k-bucket, which is used for the lookup process. When a node receives a lookup request it will search for a node inside its bucket which shares the longest common prefix with the lookup-key. The discovered node is then used to another lookup request. This process is repeated iteratively until the required node is reached.
 
@@ -60,15 +60,15 @@ Kademlia stands out from the other DHT P2P systems by maintaining the routing ta
 %While Kademlia may flood the network with lookups, it does not flood the network with control messages; however, this together may generate more data traffic.
 
 \subsubsection{TomP2P}
-TomP2P is a JAVA implementation of Kademlia protocol with many extra features. TomP2P allows for instance automatic set up of NAT traversal which can solve the challenge with unreachable external peers. This is important when using TomP2P as an infrastructure for a cross-platform applications that among others run on mobile devices.
+TomP2P is a JAVA implementation of Kademlia protocol with many extra features. TomP2P allows for instance automatic set up of NAT traversal which can solve the challenge with unreachable external peers. This is important when using TomP2P as an infrastructure for cross-platform applications that among others run on mobile devices.
 
- TomP2P enables custom behaviour for built-in methods like GET and PUT. Thus developers is able to write some custom code to be executed when a key-value for instance is requested.
+TomP2P enables custom behaviour for built-in methods like \emph{GET} and \emph{PUT}. Thus developers is able to write some custom code to be executed when a key-value for instance is requested.
 
-Replication in TomP2P is categorized as indirect replication and direct replication. The direct replication is the original replication mechanism defined in the Kademlia design where each node constantly publish its to the closest nodes. The indirect replication is about extending the responsibility of the publishing functionality by also making the neighbours contribute.
+Replication in TomP2P is categorized as indirect replication and direct replication. The direct replication is the original replication mechanism defined in the Kademlia design where each node constantly publish its content to the closest nodes. The indirect replication is about extending the responsibility of the publishing functionality by also making the neighbours contribute.
     
-The security implementation in TomP2P ensures data integrity, which means preventing unauthorized users to alter the stored key-values.This is done by using the author's public key to sign the key-values.
+The security implementation in TomP2P ensures data integrity, which means preventing unauthorized users to alter the stored key-values. This is done by using the author's public key to sign the key-values.
 
-Encrypted communication is not a part of TomP2P and thereby confidentiality is not ensured.
+Encrypted communication is not a part of TomP2P and thereby confidentiality is not ensured by default.
 
 %Each TomP2P node has a table that can be configured either to be disk-based or memory-based to store its values. 
 
