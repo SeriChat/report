@@ -81,9 +81,22 @@ When a group member fails its children have to rejoin the group as soon as possi
 \end{figure}
 
 \section{Confidentiality}
-To ensure confidentiality it is important to treat two cases in the group chat. The first case is when a node joins a group the communication between the joining peer and the root have to be kept secret. As the communication is only between two peers it made most sense to use asymmetric encryption. For this asymmetric encryption the RSA algorithm is used by encrypting the password using the public key for the Group Owner.
+To ensure confidentiality it is important to treat two cases in the group chat. The first case is when a node joins a group the communication between the joining peer and the root have to be kept secret. As the communication is only between two peers it made most sense to use asymmetric encryption. For this asymmetric encryption the RSA algorithm is used by encrypting the password using the public key for the Group Owner. See the illustration on \autoref{fig:jon-enc}.
+\begin{figure}[bth]
+	\centering
+	\includegraphics[width=1\linewidth]{gfx/join-enc}}
+\caption{RSA encryption in the join-scenario}
+{\label{fig:jon-enc}
+\end{figure}
 
-The second case is when a message is sent inside the group, where this message should stay private such that only the group members can read the message. In this case the communication is between one to many and thereby its chosen to use symmetric encryption. For symmetric  encryption the AES algorithm is used. An AES cryptographic key is received by each member joining the group. All messages between the groups are encrypted by the known AES cryptographic key.
+The second case is when a message is sent inside the group, where this message should stay private such that only the group members can read the message. In this case the communication is between one to many and thereby its chosen to use symmetric encryption. For symmetric  encryption the AES algorithm is used. An AES cryptographic key is received by each member joining the group. All messages between the groups are encrypted by the known AES cryptographic key. See the illustration on \autoref{fig:comm-enc}.
+\begin{figure}[bth]
+	\centering
+	\includegraphics[width=1\linewidth]{gfx/communicate-enc}}
+\caption{AES encryption in the communication-scenario}
+{\label{fig:comm-enc}
+\end{figure}
+
 
 %TODO: What about deffie-hellman?
 
