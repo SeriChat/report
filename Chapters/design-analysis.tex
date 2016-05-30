@@ -33,7 +33,7 @@ When a node choose to join a group, it looks up the hashes of the \emph{GroupNam
 	\caption{Join scenario}\label{fig:joinScenario}
 \end{figure}
 
-It is clear that SeriChat uses the top-down approach in the join scenario. The top-down approach gives the opportunity to balance the binary-tree, which is important for the performance. The root and the members, in the top-down approach, have the decision about where new members should be placed. The algorithm used for the placement is fairly simple. Every time a root or a member forwards a new member to the children, the choice is the inverse of the previous choice. This results in a balanced tree because the members are always switching between forwarding to the right-child or forwarding to the left-child. 
+It is clear that SeriChat uses the top-down approach in the join scenario. The top-down approach gives the opportunity to balance the binary-tree, which is important for the performance \cite{plavec2007digital}. The root and the members, in the top-down approach, have the decision about where new members should be placed. The algorithm used for the placement is fairly simple. Every time a root or a member forwards a new member to the children, the choice is the inverse of the previous choice. This results in a balanced tree because the members are always switching between forwarding to the right-child or forwarding to the left-child. 
 
 \subsection{Leave}
 When a peer choose to leave the group it informs its children by sending a \emph{leave event}. The children will then inform the root about their parent's leaving together with a \emph{rejoin event}. The system finds a new place for them by use of the same algorithm described in the join scenario.
