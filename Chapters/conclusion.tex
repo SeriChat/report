@@ -1,45 +1,15 @@
 \chapter{Conclusion}
 \label{cha:conclusion}
-Building a confidential and fair group chat system based on P2P as a better alternative to the existing solutions had some challenges. 
-The most challenging part was to setup and use the TomP2P implementation of Kademlia. TomP2P had some poor and outdated documentation, which made it very difficult to use.  
-SeriChat has all important functionality to make a good, fair, and confidential decentralized group chat system  \cite{matl2015effective}. 
+In this project report, we provide a design and a proof-of-concept of a new group chat system build on top of Kademlia with special focus on confidentiality and fairness.
+We present some related work, among others different P2P infrastructures and P2P-based group communication systems.
 
-%You cannot leave
+The different scenarios that are necessary for a group chat system as \emph{create}, \emph{join}, \emph{communicate}, and \emph{leave} are analysed and from these a carefully chosen design with focus on fairness is extracted. 
+Fault-tolerance is an important part of our design to make the group chat system robust. The design of fault-tolerance is inspired by a research paper which presents a group chat extension for Kademlia \cite{matl2015effective}.
+Confidentiality is also a very important part of our design where focus is on ensuring that third-party cannot intercept the communication.
 
-The results was promising but not real-life situation...
+A proof-of-concept is implemented with the majority of the designed functionalities though the part with fault-tolerance is not implemented. In the proof-of-concept it is possible to create a group, join a group, and communicate within group, but the leave functionality is not implemented, see \autoref{app:poc}. 
+The most challenging part in the implementation is to setup and use the TomP2P libraries. TomP2P has some poor and outdated documentation, which makes it very difficult to explorer its functionalities.  
 
+The results shows clearly that the SeriChat design is able to among others achieve fairness. The results also shows that SeriChat has a reasonable latency in a typical group size (between 2-25 members). 
 
-
-
-Today we have a lot of different chat systems used for different purposes. These chat systems are build for all kind of operating systems. 
-Some of which are not encrypted, others are client-side encrypted and a few are end-to-end encrypted. Common for most of these chat systems are the dependency on centralized solutions which sort of can have some back doors that can create uncertainty about privacy of data. 
-
-Peer-to-Peer (P2P) which is a decentralized way of communicating is an architecture where no one can have a superior role opposed to e.g. a client/server solution or other solutions with third-party interactions. By using P2P one gets rid of the uncertainty for others knowing about data or communication that is meant to be private. 
-
-P2P could be a good alternative for an infrastructure used for chat systems. There already exist designs and implementations of P2P based chat systems e.g. SCRIBE. Though there has always been a challenge in fair distribution of load and this might be the reason why none of these solutions can catch up with today's existing popular client/server based chat systems.  
-
-
-
-
-
-
-
-
-
-
-This, then is the grand summary of what you have accomplished.  You
-may well imagine that many readers will read your Introduction, and
-then skip to the Conclusion, and if, and only if, those two parts are
-interesting, might be tempted to read the rest. A consequence is that
-you should ensure that the reader will gain a good overall
-understanding of what you have done by reading only the conclusion.
-Thus, this is a place to summarise all that has gone before, before
-finally concluding on the results of your experiments and the validity
-of your hypotheses. It is also important to ensure that the
-Introduction (which in all likelihood was written first) still aligns
-closely with the conclusions reached.
-
-If you so desire, this is also where you might add a section on Future
-Work, where you point in the directions that should be followed to
-complete the work you have already accomplished.
-
+Building a confidential group chat system based on P2P and in the same time keep the system fair as a better alternative to the existing solutions shows to be promising, all in all. However, there are still a lot to build and improve before SeriChat is a complete solution and ready for being used by millions of people.
