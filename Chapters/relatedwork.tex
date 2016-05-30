@@ -14,12 +14,12 @@ Peer-to-Peer (P2P) networking has been evolving for some decades and is now a so
 P2P is characterized by sharing resources directly between peers without any intermediate interaction and does not have any single point of failure. The activities are coordinated between the peers in the network.
 There are many existing solutions for P2P networks. In the coming subsections a few of these networks, which are relevant for this project, are presented. 
 
-Many P2P systems are implemented as Distributed Hash Tables (DHT) which are a distributed key-value store.
+Many P2P systems are implemented as Distributed Hash Tables (DHT) which are a distributed key-value store \cite{stoica2001chord}.
 DHT provides look-up services similar to regular hash tables.
 DHT also provides a good load balance by distributing key-values evenly between peers which is an important factor for P2P systems.
 
 \subsection{Pastry}
-Pastry is a structured P2P network, that implements DHT, designed to be a scalable and fault-tolerant infrastructure for other applications. 
+Pastry is a structured P2P network, that implements DHT, designed to be a scalable and fault-tolerant infrastructure for other applications \cite{rowstron2001pastry}. 
 %The keys and the values are stored in the peers and these can then be used to build knowledge about the peers in the network.
 Each peer in the network has a routing table which provides some knowledge about the other peers in the network. These routing tables are also maintained by each peer.
 The routing table consists of a list of peers with unique id's mapping to the addresses of some peers in the network.
@@ -46,7 +46,7 @@ An advantage in Pastry is that it prefers nodes that are close in the ip-space a
 %use peer you know
 
 \subsection{Kademlia}
-Kademlia is another structured P2P network functioning as a DHT. Kademlia focuses on scalability, load-balancing, and fault-tolerance. Kademlia is used in many applications with millions of users including \emph{BitTorrent}.
+Kademlia is another structured P2P network functioning as a DHT \cite{maymounkov2002kademlia}. Kademlia focuses on scalability, load-balancing, and fault-tolerance. Kademlia is used in many applications with millions of users including \emph{BitTorrent}.
 
 Every Kademlia node owns a 160-bit long unique identifier. The keys are stored at the node with equal id or with the shortest distance.
 The distance between nodes is determined using bitwise \emph{exclusive OR} (XOR). The XOR is unidirectional and it therefore ensure a unique distance for every node. Unidirectionality means that all lookups for a specific key end at the same path, regardless of the originating node, enabling caching frequently requested key-values and thus lessens the load on nodes with popular contents.
@@ -114,9 +114,9 @@ Encrypted communication is used for obtaining confidentiality such a third party
 %Symetric
 \textbf{Symmetric encryption:} 
 
-\subsection{Key Exchange}
-\subsubsection{Diffie-Hellman key exchange}
-\subsubsection{Symmetric Encryption}
+%\subsection{Key Exchange}
+%\subsubsection{Diffie-Hellman key exchange}
+%\subsubsection{Symmetric Encryption}
 
 
 
