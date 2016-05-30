@@ -5,7 +5,7 @@ The different sections presented in this chapter will be divided into following 
 \begin{enumerate}
 	\item Existing peer-to-peer networks
 	\item Existing group communication within peer-to-peer  
-	\item Confidentiality and privacy in communication
+	%\item Confidentiality and privacy in communication
 \end{enumerate}
 
 \section{Peer-to-Peer Networks}
@@ -51,7 +51,14 @@ Kademlia is another structured P2P network functioning as a DHT \cite{maymounkov
 Every Kademlia node owns a 160-bit long unique identifier. The keys are stored at the node with equal id or with the shortest distance.
 The distance between nodes is determined using bitwise \emph{exclusive OR} (XOR). The XOR is unidirectional and it therefore ensure a unique distance for every node. Unidirectionality means that all lookups for a specific key end at the same path, regardless of the originating node, enabling caching frequently requested key-values and thus lessens the load on nodes with popular contents.
 
-Nodes in Kademlia is treated as leaves in a binary tree. The position of nodes is determined by the shortest unique prefix of its ID as illustrated by \autoref{fig:kademliaprefix}. Every node see the rest of the binary tree as divided subtrees. The closest subtree consists of nodes with an id that share the longest common prefix with the node. Every node is ensured to know at least one node in each of the subtrees. That info is stored in the k-bucket, which is used for the lookup process. When a node receives a lookup request it will search for a node inside its bucket which shares the longest common prefix with the lookup-key. The discovered node is then used to another lookup request. This process is repeated iteratively until the required node is reached.
+Nodes in Kademlia is treated as leaves in a binary tree. The position of nodes is determined by the shortest unique prefix of its ID as illustrated by \autoref{fig:kademliaprefix}. 
+
+\begin{figure}[bth]
+	\includegraphics[width=1\linewidth]{gfx/kademlia-tree}
+	\caption[Kademlia Binary tree]{Kademlia Binary tree} \label{fig:kademliaprefix}
+\end{figure}
+
+Every node see the rest of the binary tree as divided subtrees. The closest subtree consists of nodes with an id that share the longest common prefix with the node. Every node is ensured to know at least one node in each of the subtrees. That info is stored in the k-bucket, which is used for the lookup process. When a node receives a lookup request it will search for a node inside its bucket which shares the longest common prefix with the lookup-key. The discovered node is then used to another lookup request. This process is repeated iteratively until the required node is reached.
 
 Kademlia stands out from the other DHT P2P systems by maintaining the routing tables with a minimal effort. Everytime a node receives a request it will update its k-bucket with info about the requesting node. Thus the k-bucket will stay up-to-date without any manual effort. This is a big advantage compared with Pastry which uses a huge amount of control-traffic to maintain it's routing table.
 
@@ -60,7 +67,7 @@ Kademlia stands out from the other DHT P2P systems by maintaining the routing ta
 %While Kademlia may flood the network with lookups, it does not flood the network with control messages; however, this together may generate more data traffic.
 
 \subsubsection{TomP2P}
-TomP2P is a JAVA implementation of Kademlia protocol with many extra features. TomP2P allows for instance automatic set up of NAT traversal which can solve the challenge with unreachable external peers. This is important when using TomP2P as an infrastructure for cross-platform applications that among others run on mobile devices.
+TomP2P is a JAVA implementation of Kademlia protocol with many extra features \cite{TomP22:online}. TomP2P allows for instance automatic set up of NAT traversal which can solve the challenge with unreachable external peers. This is important when using TomP2P as an infrastructure for cross-platform applications that among others run on mobile devices.
 
 TomP2P enables custom behaviour for built-in methods like \emph{GET} and \emph{PUT}. Thus developers is able to write some custom code to be executed when a key-value for instance is requested.
 
@@ -74,10 +81,10 @@ Encrypted communication is not a part of TomP2P and thereby confidentiality is n
 
 \section{Group Communication}
 Group communication is an important aspect of communication and can be used to a number of useful things as group chat, live media stream etc.
-Regular DHT's or structured networks does not support group communication per default, but there has been build different extensions which supports multi-casting and thereby making it possible to establish communication between certain group of nodes in the network. 
+Regular DHT's or structured networks does not support group communication per default, but there has been build different extensions which supports multi-casting and thereby making it possible to establish communication between certain group of nodes in the network \cite{p2poverlay} \cite{trustedp2p} . 
 A tree structure is normally used for supporting multicast functionality, where the tree ensures the relation between nodes associated to the group. This tree structure can be build in different ways depending on the trade-off's between speed, load-balancing, and ordering.
 
-The top-down approach of building a tree is about using the root to distribute data to other group members in the tree. This means that everytime a peer needs to join, send or leave a group it need to contact the root of the group and afterward the root will initiate the multicasting. This approach ensures by default a correct ordering of the communicated messages. 
+The top-down approach of building a tree is about using the root to distribute data to other group members in the tree. This means that everytime a peer needs to join, send or leave a group it need to contact the root of the group and afterwards the root will initiate the multicasting. This approach ensures by default a correct ordering of the communicated messages. 
 
 The crawl approach of building a tree is to make the members of the tree forward the messages to their children and parents without using any central nodes. Thus all nodes in the tree are equally loaded and the messages are distributed faster in the network in contrast to the top-down approach. However the sequence of the messages is hard to maintain. 
 
@@ -93,7 +100,7 @@ To leave a group, a node will first check if it has any children and if it hasn'
 
  
 \subsection{Kademlia Group Extension}
-A research article presents an extension to the Kademlia network that provides group communication \cite{groKdml}. This article is inspired from SCRIBE and uses many of the same elements used in SCRIBE. The article discusses two tree-architectures; the first one is the top-down approach also used in SCRIBE and the second one is the crawl approach.
+A research article presents an extension to the Kademlia network that provides group communication \cite{matl2015effective}. This article is inspired from SCRIBE and uses many of the same elements used in SCRIBE. The article discusses two tree-architectures; the first one is the top-down approach also used in SCRIBE and the second one is the crawl approach.
 
 The Kademlia extension uses in their case study the crawl approach for building its tree and compares it with SCRIBE. Measurements are made for message delay when multicasting messages and the amount of transferred data. The results from the case study shows that there is not much difference in the message delay between the two systems even though the crawl approach was expected to be faster than the top-down approach. The reason could be that Pastry piggy-backs the messages in the lookup request and thereby saves some time. However, the results for the other measurements are as expected where SCRIBE uses more data than the Kademlia extension because of the huge amount of data sent for maintaining the routing table in Pastry.
 
@@ -101,18 +108,18 @@ The Kademlia extension uses in their case study the crawl approach for building 
 The article also discusses how to keep the tree fault-tolerant and proposes that every tree member should periodically send a control message to its parent. Another aspect is if a root member fails, which is a major problem. For maintaining the tree root, multiple roots are presented such that the duplicated root can replace the original root in case it fails.
 
 
-\section{Confidential Communication}
-Keeping the communication private from external people is depending on two factors; the first one is that the group members agrees on a secret key only known by the group members and the second factor is to encrypt the communication using the agreed secret key.
- 
-\subsection{Encrypted Communication}
-Encrypted communication is used for obtaining confidentiality such a third party cannot intercept the communication. By using encryption, data can be kept secret between a certain group of people.
+%\section{Confidential Communication}
+%Keeping the communication private from external people is depending on two factors; the first one is that the group members agrees on a secret key only known by the group members and the second factor is to encrypt the communication using the agreed secret key.
+% 
+%\subsection{Encrypted Communication}
+%Encrypted communication is used for obtaining confidentiality such a third party cannot intercept the communication. By using encryption, data can be kept secret between a certain group of people.
 %TODO: Not done yet
 
-%Asymetric
-\textbf{Asymmetric encryption:} Sometime it is only necessary to encrypt asymetrically.
-
-%Symetric
-\textbf{Symmetric encryption:} 
+%%Asymetric
+%\textbf{Asymmetric encryption:} Sometime it is only necessary to encrypt asymetrically.
+%
+%%Symetric
+%\textbf{Symmetric encryption:} 
 
 %\subsection{Key Exchange}
 %\subsubsection{Diffie-Hellman key exchange}
