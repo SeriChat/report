@@ -68,12 +68,12 @@ xtick=data,
 We discovered that even though the root is loaded with the join requests, the root saves some load, not having to receive its own messages, when forwarding messages. Whereas all the rest of the members also have to receive their own messages during forward.
 
 \section{Message Delivery Latency}
-Another goal was to be able to replace existing solution and therefore it is important that SeriChat is fast and responsive. 
+Another goal was to be able to replace existing solutions and therefore it is important that SeriChat is fast and responsive. 
 This experiment is intended to measure the latency between the time a root receives a message and the time when this message is received by all the members. 
 
 The experiment was repeated three times using respectively 15, 25, and 80 nodes running the SeriChat prototype. 
 
-The results from the message delivery experiment are, as illustrated in \autoref{fig:messagelatency}, actually very good. Having in mind that a typical group chat won't have more than 80 members at a maximum, so a latency of 511 ms for a group with 80 member is not that bad. It should be noticed though that this experiment is made locally on one machine, but if it was to be used in a real distributed system the latency will naturally have been higher than these results.   
+The results from the message delivery experiment are, as illustrated in \autoref{fig:messagelatency}. Having in mind that a typical group chat won't have more than 80 members at a maximum, so a latency of 511 ms for a group with 80 member is not that bad. It should be noticed though that this experiment is made locally on one machine, but if it was to be used in a real distributed system the latency will naturally have been higher than these results.   
 
 % pænt
 %normal 10-25 antal i grypper --> 80 er en stor gruppe,  erfraing
