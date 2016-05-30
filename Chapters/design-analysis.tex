@@ -33,7 +33,7 @@ When a node choose to join a group, it looks up the hashes of the \emph{GroupNam
 	\caption{Join scenario}\label{fig:joinScenario}
 \end{figure}
 
-It is clear that SeriChat uses the top-down approach in the join scenario. The top-down approach gives the opportunity to balance the binary-tree because the root and the members have then the decision about where the new member should be placed. The algorithm used for the placement is fairly simple. Every time a root or a member forwards a new member to the children, the choice is the inverse of the previous choice. This results in a balanced tree because the members are always switching between forwarding to the right-child or forwarding to the left-child.
+It is clear that SeriChat uses the top-down approach in the join scenario. The top-down approach gives the opportunity to balance the binary-tree, which is important for the performance. The root and the members, in the top-down approach, have the decision about where new members should be placed. The algorithm used for the placement is fairly simple. Every time a root or a member forwards a new member to the children, the choice is the inverse of the previous choice. This results in a balanced tree because the members are always switching between forwarding to the right-child or forwarding to the left-child. 
 
 \subsection{Leave}
 When a peer choose to leave the group it informs its children by sending a \emph{leave event}. The children will then inform the root about their parent's leaving together with a \emph{rejoin event}. The system finds a new place for them by use of the same algorithm described in the join scenario.
@@ -56,11 +56,11 @@ SeriChat also uses the top-down approach in this scenario. The reason for that i
 \end{figure}
 
 \section{Fault-tolerance}
-Fault-tolerance in the Kademlia infrastructure is ensured by TomP2P, but the tree-structure for the group communication is not. The tree-structure is vulnerable because the members depends on each other to fulfill the communication and a single failure can have a huge impact especially when it is the root that fails. Fault-tolerance for the tree-structure should therefore be ensured. In the following subsections the design of handling two different failure scenario, in group chatting, is presented. These scenarios are: \emph{failed root} and \emph{failed member}.
+Fault-tolerance in the Kademlia infrastructure is ensured by TomP2P, but the tree-structure for the group communication is not. The tree-structure is vulnerable because the members depends on each other to fulfill the communication and a single failure can have a huge impact especially when it is the root that fails. Fault-tolerance for the tree-structure should therefore be ensured. In the following subsections the design of handling two different failure scenarios, in group chatting, is presented. These scenarios are: \emph{failed root} and \emph{failed member} and are both inspired by \cite{matl2015effective}.
 
 \subsection{Failed Root}
 When a root fails one of the group members has to take over as soon as possible.
-The \emph{GroupOwner} chooses therefore one or two of the members and makes them the co-owners. The co-owners receives a replication of the \emph{GroupOwner}'s data and are placed at the same level as the root as illustrated in \autoref{fig:failedRoot}. The co-owners have to monitor the \emph{GroupOwner} and take over the job (one of them) when necessary. The monitoring is done by sending \emph{``heartbeat'' events} periodically from the \emph{GroupOwner} to the co-owners. Thereby the co-owners are able to indicate a failed root as soon as the \emph{heartbeat events} are interrupted.
+The \emph{GroupOwner} chooses therefore one or two of the members and makes them the co-owners. The co-owners receives a replication of the \emph{GroupOwner}'s data and are placed at the same level as the root as illustrated in \autoref{fig:failedRoot}. The co-owners have to monitor the \emph{GroupOwner} and take over the job (one of them) when necessary. The monitoring is done by sending \emph{``heartbeat'' events} \cite{aguilera1997heartbeat} periodically from the \emph{GroupOwner} to the co-owners. Thereby the co-owners are able to indicate a failed root as soon as the \emph{heartbeat events} are interrupted.
 
 \begin{figure}[bth]
 	\centering
